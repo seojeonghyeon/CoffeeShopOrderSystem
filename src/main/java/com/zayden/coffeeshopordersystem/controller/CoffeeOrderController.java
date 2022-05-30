@@ -1,10 +1,12 @@
 package com.zayden.coffeeshopordersystem.controller;
 
 import com.zayden.coffeeshopordersystem.jpa.coffeeinfo.CoffeeInfoEntity;
+import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeCountEntity;
 import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeOrderEntity;
 import com.zayden.coffeeshopordersystem.service.coffeeinfo.CoffeeInfoService;
 import com.zayden.coffeeshopordersystem.service.coffeeorder.CoffeeOrderService;
 import com.zayden.coffeeshopordersystem.vo.ResponseCoffeeInfo;
+import com.zayden.coffeeshopordersystem.vo.ResponsePopularOrderList;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -21,6 +23,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/coffeeorder")
 public class CoffeeOrderController {
+
+    private static final int popularBeforeDays = 7;
+    private static final int popularLimitNumberOfData = 3;
 
     private Environment env;
     private CoffeeInfoService coffeeInfoService;
@@ -56,24 +61,16 @@ public class CoffeeOrderController {
     }
 
     @GetMapping("/popularLists")
-    public ResponseEntity<List<ResponseCoffeeInfo>> getCoffeeOrderPopularLists(){
+    public ResponseEntity<List<ResponsePopularOrderList>> getCoffeeOrderPopularLists(){
         log.info("Before get popular coffee infomation datas");
 
-        String[] popularCoffeeInfo = coffeeOrderService.getPopularCoffeeOrderList7DaysAgo();
-
-        Iterable<CoffeeInfoEntity> coffeeInfoEntities = coffeeInfoService.getPopularCoffeeInfoLists();
-
-        List<ResponseCoffeeInfo> responseCoffeeInfoList = new ArrayList<>();
-        coffeeInfoEntities.forEach(v->{
-            responseCoffeeInfoList.add(new ModelMapper().map(v, ResponseCoffeeInfo.class));
+        List<CoffeeCountEntity> coffeeCountEntityList = coffeeOrderService.getOrderCountInfoByBeforeDaysAndLimits(popularBeforeDays, popularLimitNumberOfData);
+        List<ResponsePopularOrderList> responsePopularOrderLists = new ArrayList<>();
+        coffeeCountEntityList.forEach(v->{
+            responsePopularOrderLists.add(new ModelMapper().map(v, ResponsePopularOrderList.class));
         });
 
         log.info("Add get popular coffee infomation datas");
-        return ResponseEntity.status(HttpStatus.OK).body();
+        return ResponseEntity.status(HttpStatus.OK).body(responsePopularOrderLists);
     }
-
-
-
-
-
 }

@@ -1,10 +1,8 @@
 package com.zayden.coffeeshopordersystem.jpa.coffeeorder;
 
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -24,9 +22,11 @@ public class CoffeeOrderEntity {
     private String coffeeUid;
 
     @Column(nullable = false)
+    private String coffeeName;
+
+    @Column(nullable = false)
     private Integer coffeeCost;
 
     @Column(nullable = false, updatable = false, insertable = false)
-    @ColumnDefault(value="CURRENT_TIMESTAMP")
-    private Date orderDate;
+    private LocalDate orderDate;
 }
