@@ -75,7 +75,7 @@ public class CoffeeOrderController {
         //주문 내역 저장
 
         //kafka로 전송
-        
+
 
         log.info("After post coffee orders");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseCoffeeOrder());
