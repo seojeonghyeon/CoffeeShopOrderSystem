@@ -1,5 +1,6 @@
 package com.zayden.coffeeshopordersystem.service.coffeeorder;
 
+import com.zayden.coffeeshopordersystem.dto.CoffeeOrderDto;
 import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeCountEntity;
 import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,10 @@ public class CoffeeOrderServiceImpl implements CoffeeOrderService{
     public List<CoffeeCountEntity> getOrderCountInfoByBeforeDaysAndLimits(int beforeDays, int limitNumberOfData){
         LocalDate currentDate = LocalDate.now();
         return coffeeOrderRepository.findByCoffeeUidOrderByCoffeeUidIdDesc(currentDate.minusDays(beforeDays), currentDate, limitNumberOfData);
+    }
+
+    @Override
+    public boolean updateCoffeeOrder(CoffeeOrderDto coffeeOrderDto) {
+        return false;
     }
 }

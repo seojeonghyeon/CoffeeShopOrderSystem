@@ -6,6 +6,11 @@ popularvalue:
   beforedays: 7
   limitnumberofdata: 3
 
+scriptdata:
+  kafka:
+    coffeeorder:
+      ip: 127.0.0.1:9092
+
 spring:
   h2:
     console:
@@ -29,4 +34,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, refresh, health
+        include: info, refresh, health, httptrace

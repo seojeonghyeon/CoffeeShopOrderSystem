@@ -1,5 +1,7 @@
 package com.zayden.coffeeshopordersystem.controller;
 
+import com.zayden.coffeeshopordersystem.dto.CoffeeOrderDto;
+import com.zayden.coffeeshopordersystem.dto.CoffeePointDto;
 import com.zayden.coffeeshopordersystem.jpa.coffeeinfo.CoffeeInfoEntity;
 import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeCountEntity;
 import com.zayden.coffeeshopordersystem.jpa.coffeeorder.CoffeeOrderEntity;
@@ -7,6 +9,7 @@ import com.zayden.coffeeshopordersystem.service.coffeeinfo.CoffeeInfoService;
 import com.zayden.coffeeshopordersystem.service.coffeeorder.CoffeeOrderService;
 import com.zayden.coffeeshopordersystem.vo.RequestCoffeeOrder;
 import com.zayden.coffeeshopordersystem.vo.ResponseCoffeeInfo;
+import com.zayden.coffeeshopordersystem.vo.ResponseCoffeeOrder;
 import com.zayden.coffeeshopordersystem.vo.ResponsePopularOrderList;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -52,13 +56,36 @@ public class CoffeeOrderController {
     }
 
     @PostMapping("/postCoffeeOrders")
-    public ResponseEntity<List<ResponseCoffeeInfo>> postCoffeeOrders(@RequestBody List<RequestCoffeeOrder> requestCoffeeOrders){
+    public ResponseEntity<ResponseCoffeeOrder> postCoffeeOrders(@RequestBody List<RequestCoffeeOrder> requestCoffeeOrders){
         log.info("Before post coffee orders");
 
+        HashMap<String, List<String>> coffeePointHashMap = new HashMap<>();
+        requestCoffeeOrders.forEach(v->{
+            List<String> coffeeList = coffeePointHashMap.getOrDefault(v.getCoffeeUid(), new ArrayList<>());
+            coffeeList.add(v.getCoffeeUid());
+            coffeePointHashMap.put(v.getUserUid(), coffeeList);
+        });
 
+        //커피 값 가져오기
+
+        //사용자 잔여 포인트 확인 후, 잔여포인트 > 커피값, 차감
+
+        //사용자 잔여 포인트 < 커피 값, fail
+
+        //주문 내역 저장
+
+        //kafka로 전송
+
+
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        CoffeeOrderDto coffeeOrderDto = mapper.map(requestCoffeeOrders, CoffeeOrderDto.class);
+
+        if(!coffeeOrderService.updateCoffeeOrder(coffeeOrderDto))
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseCoffeeOrder());
 
         log.info("After post coffee orders");
-        return ResponseEntity.status(HttpStatus.OK).body();
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponseCoffeeOrder());
     }
 
     @GetMapping("/popularLists")
