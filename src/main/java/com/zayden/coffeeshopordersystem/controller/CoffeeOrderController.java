@@ -75,14 +75,7 @@ public class CoffeeOrderController {
         //주문 내역 저장
 
         //kafka로 전송
-
-
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        CoffeeOrderDto coffeeOrderDto = mapper.map(requestCoffeeOrders, CoffeeOrderDto.class);
-
-        if(!coffeeOrderService.updateCoffeeOrder(coffeeOrderDto))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseCoffeeOrder());
+        
 
         log.info("After post coffee orders");
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseCoffeeOrder());
