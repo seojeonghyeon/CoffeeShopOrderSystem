@@ -17,5 +17,11 @@ public class CoffeePointEntity {
     private String userUid;
 
     @Column(nullable = false)
+    private String userToken;
+
+    @Column(nullable = false, length = 150, unique = true)
+    private String userTokenUid;
+
+    @Column(nullable = false)
     private int userPoint;
 }
